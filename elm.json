@@ -1,0 +1,20 @@
+{
+  "type": "package",
+  "summary": "Two-dimensional matrix with indexMap, backed by fast Array from the Elm core.",
+  "name": "perty/matrix",
+  "license": "Apache-2.0",
+  "version": "1.0.0",
+  "elm-version": "0.19.1 <= v < 0.20.0",
+  "exposed-modules": [
+    "Matrix"
+  ],
+  "source-directories": [
+    "src"
+  ],
+  "dependencies": {
+    "elm/core": "1.0.5 <= v < 2.0.0"
+  },
+  "test-dependencies": {
+    "elm-explorations/test": "1.2.2 <= v < 2.0.0"
+  }
+}
