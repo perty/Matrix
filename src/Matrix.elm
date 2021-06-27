@@ -1,19 +1,14 @@
 module Matrix exposing
     ( Matrix
     , empty, initialize, repeat
-    , size, get, getXs, getYs
+    , size, get, getXs, getYs, neighbours
     , set
-    , map
-    , indexedMap
-    , neighbours)
+    , map, indexedMap
+    )
 
-{-|
-Two-dimensional matrix backed by Array from the Elm core, the fast immutable array
+{-| Two-dimensional matrix backed by Array from the Elm core, the fast immutable array
 implementation.
 
-The main motivation for this is the indexMap function that is useful in games where you
-want to act depending on position as well as content. E.g., the game of life where the cell
-is depending on its neighbours.
 
 # Definition
 
@@ -27,7 +22,7 @@ is depending on its neighbours.
 
 # Query
 
-@docs size, get, getXs, getYs
+@docs size, get, getXs, getYs, neighbours
 
 
 # Manipulate
@@ -150,7 +145,7 @@ pickY y arrays =
 
 {-| Apply a function on every element in a matrix.
 
-Matrix.map (\n -> n * 2) [ [ 0, 0, 0 ], [ 0, 1, 2 ] ] => [ [ 0, 0, 0 ], [ 0, 2, 4 ] ]
+Matrix.map (\\n -> n \* 2) [ [ 0, 0, 0 ], [ 0, 1, 2 ] ] => [ [ 0, 0, 0 ], [ 0, 2, 4 ] ]
 
 -}
 map : (a -> b) -> Matrix a -> Matrix b
@@ -160,7 +155,7 @@ map function matrix =
 
 {-| Apply a function on every element with its x and y as first arguments.
 
-Matrix.indexedMap (\x y _ -> (String.fromInt x + "," + String.fromInt y) [["","",""]["","",""]]
+Matrix.indexedMap (\\x y \_ -> (String.fromInt x + "," + String.fromInt y) [["","",""]][["","",""]["","",""]]
 => [[ "0,0", "0,1", "0,2" ],[ "1,0", "1,1", "1,2" ] ]
 
 -}
@@ -168,9 +163,9 @@ indexedMap : (Int -> Int -> a -> b) -> Matrix a -> Matrix b
 indexedMap function matrix =
     matrix |> Array.indexedMap (\x array -> Array.indexedMap (function x) array)
 
+
 {-| Return an array of possible neighbour cells for a given cell.
 It is an array of Maybe, compared with the get function that is a single Maybe.
-
 -}
 neighbours : Matrix a -> Int -> Int -> Array.Array (Maybe a)
 neighbours matrix x y =
