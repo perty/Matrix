@@ -77,7 +77,7 @@ suite =
             [ test "Double contents" <|
                 \() -> Expect.equal (Array.fromList [ Array.fromList [ 0, 0, 0 ], Array.fromList [ 0, 2, 4 ] ]) (Matrix.map (\n -> n * 2) twoByThreeInt)
             ]
-        , describe "IndexMap function"
+        , describe "IndexedMap function"
             [ test "Contents depending on x, y" <|
                 \() ->
                     Expect.equal (Array.fromList [ Array.fromList [ "0(0,0)0", "0(0,1)1", "0(0,2)2" ], Array.fromList [ "1(1,0)0", "1(1,1)1", "1(1,2)2" ] ])
