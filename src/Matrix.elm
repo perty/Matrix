@@ -5,7 +5,7 @@ module Matrix exposing
     , set
     , map
     , indexedMap
-    )
+    , neighbours)
 
 {-|
 Two-dimensional matrix backed by Array from the Elm core, the fast immutable array
@@ -150,7 +150,7 @@ pickY y arrays =
 
 {-| Apply a function on every element in a matrix.
 
-    Matrix.map (\n -> n * 2) [ [ 0, 0, 0 ], [ 0, 1, 2 ] ] => [ [ 0, 0, 0 ], [ 0, 2, 4 ] ]
+Matrix.map (\n -> n * 2) [ [ 0, 0, 0 ], [ 0, 1, 2 ] ] => [ [ 0, 0, 0 ], [ 0, 2, 4 ] ]
 
 -}
 map : (a -> b) -> Matrix a -> Matrix b
@@ -160,10 +160,32 @@ map function matrix =
 
 {-| Apply a function on every element with its x and y as first arguments.
 
-    Matrix.indexedMap (\x y _ -> (String.fromInt x + "," + String.fromInt y) [["","",""]["","",""]]
-    => [[ "0,0", "0,1", "0,2" ],[ "1,0", "1,1", "1,2" ] ]
+Matrix.indexedMap (\x y _ -> (String.fromInt x + "," + String.fromInt y) [["","",""]["","",""]]
+=> [[ "0,0", "0,1", "0,2" ],[ "1,0", "1,1", "1,2" ] ]
 
 -}
 indexedMap : (Int -> Int -> a -> b) -> Matrix a -> Matrix b
 indexedMap function matrix =
     matrix |> Array.indexedMap (\x array -> Array.indexedMap (function x) array)
+
+{-| Return an array of possible neighbour cells for a given cell.
+It is an array of Maybe, compared with the get function that is a single Maybe.
+
+-}
+neighbours : Matrix a -> Int -> Int -> Array.Array (Maybe a)
+neighbours matrix x y =
+    let
+        neighbourCoords : Array.Array ( Int, Int )
+        neighbourCoords =
+            [ ( x - 1, y - 1 )
+            , ( x - 1, y )
+            , ( x - 1, y + 1 )
+            , ( x, y - 1 )
+            , ( x, y + 1 )
+            , ( x + 1, y - 1 )
+            , ( x + 1, y )
+            , ( x + 1, y + 1 )
+            ]
+                |> Array.fromList
+    in
+    Array.map (\( xn, yn ) -> get matrix xn yn) neighbourCoords

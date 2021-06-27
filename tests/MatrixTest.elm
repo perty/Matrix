@@ -79,11 +79,19 @@ suite =
             ]
         , describe "IndexMap function"
             [ test "Contents depending on x, y" <|
-                \() -> Expect.equal (Array.fromList [ Array.fromList [ "0(0,0)0", "0(0,1)1", "0(0,2)2" ], Array.fromList [ "1(1,0)0", "1(1,1)1", "1(1,2)2" ] ]) (Matrix.indexedMap indexedConvert twoByThree)
+                \() ->
+                    Expect.equal (Array.fromList [ Array.fromList [ "0(0,0)0", "0(0,1)1", "0(0,2)2" ], Array.fromList [ "1(1,0)0", "1(1,1)1", "1(1,2)2" ] ])
+                        (Matrix.indexedMap indexedConvert twoByThree)
             ]
         , describe "Initialize with repeat"
             [ test "Zero initialize" <|
                 \() -> Expect.equal (Array.fromList [ Array.fromList [ 0, 0, 0 ], Array.fromList [ 0, 0, 0 ] ]) (Matrix.repeat 2 3 0)
+            ]
+        , describe "Neighbours, gotta love them."
+            [ test "Neighbours of a cell" <|
+                \() ->
+                    Expect.equal (Array.fromList [ Just "(0,1)", Just "(0,2)", Nothing, Just "(1,1)", Nothing, Nothing, Nothing, Nothing ])
+                        (Matrix.neighbours twoByThree 1 2)
             ]
         ]
 
