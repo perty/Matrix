@@ -77,6 +77,9 @@ size matrix =
 
 {-| Initialize a matrix, given desired size and a function for the value of a cell,
 given its x and y.
+
+    Matrix.initialize 100 100 (\x y -> String.fromInt x ++ "," ++ String.fromInt y)
+
 -}
 initialize : Int -> Int -> (Int -> Int -> a) -> Matrix a
 initialize sizeX sizeY fn =
@@ -84,6 +87,9 @@ initialize sizeX sizeY fn =
 
 
 {-| Initialize a matrix, given desired size and the value for every cell.
+
+    Matrix.repeat 100 100 InitialValue
+
 -}
 repeat : Int -> Int -> a -> Matrix a
 repeat sizeX sizeY value =
@@ -145,7 +151,7 @@ pickY y arrays =
 
 {-| Apply a function on every element in a matrix.
 
-Matrix.map (\\n -> n \* 2) [ [ 0, 0, 0 ], [ 0, 1, 2 ] ] => [ [ 0, 0, 0 ], [ 0, 2, 4 ] ]
+    Matrix.map (\\n -> n \* 2) [ [ 0, 0, 0 ], [ 0, 1, 2 ] ] => [ [ 0, 0, 0 ], [ 0, 2, 4 ] ]
 
 -}
 map : (a -> b) -> Matrix a -> Matrix b
@@ -155,8 +161,8 @@ map function matrix =
 
 {-| Apply a function on every element with its x and y as first arguments.
 
-Matrix.indexedMap (\\x y \_ -> (String.fromInt x + "," + String.fromInt y) [["","",""]][["","",""]["","",""]]
-=> [[ "0,0", "0,1", "0,2" ],[ "1,0", "1,1", "1,2" ] ]
+    Matrix.indexedMap (\\x y \_ -> (String.fromInt x + "," + String.fromInt y)(Matrix.repeat 2 3 "")
+    => [[ "0,0", "0,1", "0,2" ],[ "1,0", "1,1", "1,2" ] ]
 
 -}
 indexedMap : (Int -> Int -> a -> b) -> Matrix a -> Matrix b
@@ -165,7 +171,7 @@ indexedMap function matrix =
 
 
 {-| Return an array of possible neighbour cells for a given cell.
-It is an array of Maybe, compared with the get function that is a single Maybe.
+It is an array of Maybe, compare the get function that is a single Maybe.
 -}
 neighbours : Matrix a -> Int -> Int -> Array.Array (Maybe a)
 neighbours matrix x y =
