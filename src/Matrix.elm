@@ -4,6 +4,7 @@ module Matrix exposing
     , size, get, getXs, getYs, neighbours
     , set
     , map, indexedMap
+    , foldl
     )
 
 {-| Two-dimensional matrix backed by Array from the Elm core, the fast immutable array
@@ -168,6 +169,13 @@ map function matrix =
 indexedMap : (Int -> Int -> a -> b) -> Matrix a -> Matrix b
 indexedMap function matrix =
     matrix |> Array.indexedMap (\x array -> Array.indexedMap (function x) array)
+
+
+{-| Fold left on each x, then merge the accumulated results.
+-}
+foldl : (a -> b -> b) -> b -> (b -> b -> b) -> Matrix a -> b
+foldl function acc merge matrix =
+    Array.foldl (\ma a -> Array.foldl function acc ma |> merge a) acc matrix
 
 
 {-| Return an array of possible neighbour cells for a given cell.

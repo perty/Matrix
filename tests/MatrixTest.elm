@@ -83,6 +83,16 @@ suite =
                     Expect.equal (Array.fromList [ Array.fromList [ "0(0,0)0", "0(0,1)1", "0(0,2)2" ], Array.fromList [ "1(1,0)0", "1(1,1)1", "1(1,2)2" ] ])
                         (Matrix.indexedMap indexedConvert twoByThree)
             ]
+        , describe "Fold"
+            [ test "Fold left on a 3x3 matrix where contents are x + y and we accumulate the sum of all cells." <|
+                \_ ->
+                    let
+                        m =
+                            Matrix.initialize 3 3 (\x y -> x + y)
+                    in
+                    Matrix.foldl (\c a -> a + c) 0 (+) m
+                        |> Expect.equal 18
+            ]
         , describe "Initialize with repeat"
             [ test "Zero initialize" <|
                 \() -> Expect.equal (Array.fromList [ Array.fromList [ 0, 0, 0 ], Array.fromList [ 0, 0, 0 ] ]) (Matrix.repeat 2 3 0)
