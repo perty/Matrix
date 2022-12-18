@@ -84,11 +84,11 @@ suite =
                         (Matrix.indexedMap indexedConvert twoByThree)
             ]
         , describe "Fold"
-            [ test "Fold left on a 3x3 matrix where contents are x + y and we accumulate the sum of all cells." <|
+            [ test "Fold left on a 3x3 matrix where contents are row + col and we accumulate the sum of all cells." <|
                 \_ ->
                     let
                         m =
-                            Matrix.initialize 3 3 (\x y -> x + y)
+                            Matrix.initialize 3 3 (\row col -> row + col)
                     in
                     Matrix.foldl (\c a -> a + c) 0 (+) m
                         |> Expect.equal 18
@@ -107,5 +107,5 @@ suite =
 
 
 indexedConvert : Int -> Int -> String -> String
-indexedConvert x y value =
-    String.fromInt x ++ value ++ String.fromInt y
+indexedConvert row col value =
+    String.fromInt row ++ value ++ String.fromInt col

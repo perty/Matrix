@@ -171,7 +171,7 @@ indexedMap function matrix =
     matrix |> Array.indexedMap (\row array -> Array.indexedMap (function row) array)
 
 
-{-| Fold left on each x, then merge the accumulated results.
+{-| Fold left on each row, then merge the accumulated results.
 -}
 foldl : (a -> b -> b) -> b -> (b -> b -> b) -> Matrix a -> b
 foldl function acc merge matrix =
