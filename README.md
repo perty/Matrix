@@ -13,3 +13,5 @@ Speaking of `neighbours`, that is also a function in this package.
 API design follows the Elm core Array module.
 
 Naming is now rows and columns, as it is more fit to the purpose of the library.
+
+New function foldl for folding left over each row and then merge.

@@ -3,7 +3,7 @@
   "summary": "Two-dimensional matrix with indexMap, backed by fast Array from the Elm core.",
   "name": "perty/matrix",
   "license": "Apache-2.0",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "elm-version": "0.19.1 <= v < 0.20.0",
   "exposed-modules": [
     "Matrix"
