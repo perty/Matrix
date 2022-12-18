@@ -1,10 +1,10 @@
 module Matrix exposing
     ( Matrix
     , empty, initialize, repeat
-    , size, get, getXs, getYs, neighbours
+    , size, get, neighbours
     , set
     , map, indexedMap
-    , foldl
+    , foldl, getCol, getRow
     )
 
 {-| Two-dimensional matrix backed by Array from the Elm core, the fast immutable array
@@ -57,15 +57,15 @@ empty =
     Array.empty
 
 
-{-| Return the size of a matrix in the form of a tuple, (sizeX, sizeY).
+{-| Return the size of a matrix in the form of a tuple, (rows, cols).
 -}
 size : Matrix a -> ( Int, Int )
 size matrix =
     let
-        sizeX =
+        rows =
             Array.length matrix
 
-        sizeY =
+        cols =
             case Array.get 0 matrix of
                 Just aCol ->
                     Array.length aCol
@@ -73,18 +73,18 @@ size matrix =
                 Nothing ->
                     0
     in
-    ( sizeX, sizeY )
+    ( rows, cols )
 
 
 {-| Initialize a matrix, given desired size and a function for the value of a cell,
-given its x and y.
+given its row and col.
 
-    Matrix.initialize 100 100 (\x y -> String.fromInt x ++ "," ++ String.fromInt y)
+    Matrix.initialize 100 100 (\row col -> String.fromInt row ++ "," ++ String.fromInt col)
 
 -}
 initialize : Int -> Int -> (Int -> Int -> a) -> Matrix a
-initialize sizeX sizeY fn =
-    Array.initialize sizeX (\col -> Array.initialize sizeY (fn col))
+initialize rows cols fn =
+    Array.initialize rows (\col -> Array.initialize cols (fn col))
 
 
 {-| Initialize a matrix, given desired size and the value for every cell.
@@ -93,51 +93,51 @@ initialize sizeX sizeY fn =
 
 -}
 repeat : Int -> Int -> a -> Matrix a
-repeat sizeX sizeY value =
-    Array.repeat sizeX (Array.repeat sizeY value)
+repeat rows cols value =
+    Array.repeat rows (Array.repeat cols value)
 
 
-{-| Set the cell at (x,y) to a new value. If the (x,y) is out of bounds, silently do nothing,
+{-| Set the cell at (row, col) to a new value. If the (x,y) is out of bounds, silently do nothing,
 -}
-set : Matrix a -> Int -> Int -> a -> Matrix a
-set matrix x y v =
-    case Array.get x matrix of
+set : Int -> Int -> a -> Matrix a -> Matrix a
+set row col v matrix =
+    case Array.get row matrix of
         Just aCol ->
-            Array.set x (Array.set y v aCol) matrix
+            Array.set row (Array.set col v aCol) matrix
 
         Nothing ->
             matrix
 
 
-{-| Maybe get the value of the cell at (x,y).
+{-| Maybe get the value of the cell at (row, col).
 -}
-get : Matrix a -> Int -> Int -> Maybe a
-get matrix x y =
-    getXs matrix x |> Array.get y
+get : Int -> Int -> Matrix a -> Maybe a
+get row col matrix =
+    getRow row matrix |> Array.get col
 
 
-{-| Get all values along a given x as an array. If x is out of bounds, return an empty array.
+{-| Get all values along a given row as an array. If row is out of bounds, return an empty array.
 -}
-getXs : Matrix a -> Int -> Array a
-getXs matrix x =
-    Maybe.withDefault Array.empty (Array.get x matrix)
+getRow : Int -> Matrix a -> Array a
+getRow row matrix =
+    Maybe.withDefault Array.empty (Array.get row matrix)
 
 
-{-| Get all values along a given y as an array. If y is out of bounds, return an empty array.
+{-| Get all values along a given column as an array. If column is out of bounds, return an empty array.
 -}
-getYs : Matrix a -> Int -> Array a
-getYs matrix y =
-    Array.toList matrix |> pickY y |> Array.fromList
+getCol : Int -> Matrix a -> Array a
+getCol col matrix =
+    Array.toList matrix |> pickColumn col |> Array.fromList
 
 
-pickY : Int -> List (Array a) -> List a
-pickY y arrays =
+pickColumn : Int -> List (Array a) -> List a
+pickColumn col arrays =
     case List.head arrays of
         Nothing ->
             []
 
         Just array0 ->
-            case Array.get y array0 of
+            case Array.get col array0 of
                 Nothing ->
                     []
 
@@ -147,7 +147,7 @@ pickY y arrays =
                             []
 
                         Just tail ->
-                            v :: pickY y tail
+                            v :: pickColumn col tail
 
 
 {-| Apply a function on every element in a matrix.
@@ -160,15 +160,15 @@ map function matrix =
     matrix |> Array.map (Array.map function)
 
 
-{-| Apply a function on every element with its x and y as first arguments.
+{-| Apply a function on every element with its row and column as first arguments.
 
-    Matrix.indexedMap (\\x y \_ -> (String.fromInt x + "," + String.fromInt y)(Matrix.repeat 2 3 "")
+    Matrix.indexedMap (\\row col \_ -> (String.fromInt row + "," + String.fromInt col)(Matrix.repeat 2 3 "")
     => [[ "0,0", "0,1", "0,2" ],[ "1,0", "1,1", "1,2" ] ]
 
 -}
 indexedMap : (Int -> Int -> a -> b) -> Matrix a -> Matrix b
 indexedMap function matrix =
-    matrix |> Array.indexedMap (\x array -> Array.indexedMap (function x) array)
+    matrix |> Array.indexedMap (\row array -> Array.indexedMap (function row) array)
 
 
 {-| Fold left on each x, then merge the accumulated results.
@@ -182,19 +182,19 @@ foldl function acc merge matrix =
 It is an array of Maybe, compare the get function that is a single Maybe.
 -}
 neighbours : Matrix a -> Int -> Int -> Array.Array (Maybe a)
-neighbours matrix x y =
+neighbours matrix row col =
     let
         neighbourCoords : Array.Array ( Int, Int )
         neighbourCoords =
-            [ ( x - 1, y - 1 )
-            , ( x - 1, y )
-            , ( x - 1, y + 1 )
-            , ( x, y - 1 )
-            , ( x, y + 1 )
-            , ( x + 1, y - 1 )
-            , ( x + 1, y )
-            , ( x + 1, y + 1 )
+            [ ( row - 1, col - 1 )
+            , ( row - 1, col )
+            , ( row - 1, col + 1 )
+            , ( row, col - 1 )
+            , ( row, col + 1 )
+            , ( row + 1, col - 1 )
+            , ( row + 1, col )
+            , ( row + 1, col + 1 )
             ]
                 |> Array.fromList
     in
-    Array.map (\( xn, yn ) -> get matrix xn yn) neighbourCoords
+    Array.map (\( r, c ) -> get r c matrix) neighbourCoords

@@ -41,17 +41,17 @@ suite =
     describe "Matrix suite"
         [ describe "Test Matrix get function"
             [ test "get from empty Matrix will return Nothing" <|
-                \() -> Expect.equal Nothing (Matrix.get Matrix.empty 0 0)
+                \() -> Expect.equal Nothing (Matrix.get 0 0 Matrix.empty)
             , test "get where the cell exists" <|
-                \() -> Expect.equal (Just "(2,1)") (Matrix.get threeByThree 2 1)
+                \() -> Expect.equal (Just "(2,1)") (Matrix.get 2 1 threeByThree)
             , test "get where the cell does not exists" <|
-                \() -> Expect.equal Nothing (Matrix.get threeByThree 3 99)
+                \() -> Expect.equal Nothing (Matrix.get 3 99 threeByThree)
             ]
         , describe "Test Matrix set function"
             [ test "Insert into empty matrix is empty" <|
-                \() -> Expect.equal Matrix.empty (Matrix.set Matrix.empty 0 0 42)
+                \() -> Expect.equal Matrix.empty (Matrix.set 0 0 42 Matrix.empty)
             , test "Insert correctly and get" <|
-                \() -> Expect.equal (Just "X") (Matrix.get (Matrix.set threeByThree 1 2 "X") 1 2)
+                \() -> Expect.equal (Just "X") (Matrix.get 1 2 (Matrix.set 1 2 "X" threeByThree))
             ]
         , describe "Test Matrix size function"
             [ test "Empty matrix" <|
@@ -63,15 +63,15 @@ suite =
             ]
         , describe "Test to get all the X values"
             [ test "A (2,3) sized" <|
-                \() -> Expect.equal [ "(1,0)", "(1,1)", "(1,2)" ] (Array.toList (Matrix.getXs twoByThree 1))
+                \() -> Expect.equal [ "(1,0)", "(1,1)", "(1,2)" ] (Array.toList (Matrix.getRow 1 twoByThree))
             , test "Of limits is empty" <|
-                \() -> Expect.equal Array.empty (Matrix.getXs threeByThree 999)
+                \() -> Expect.equal Array.empty (Matrix.getRow 999 threeByThree)
             ]
         , describe "Test to get all the Y values"
             [ test "A (2,3) sized" <|
-                \() -> Expect.equal [ "(0,2)", "(1,2)" ] (Array.toList (Matrix.getYs twoByThree 2))
+                \() -> Expect.equal [ "(0,2)", "(1,2)" ] (Array.toList (Matrix.getCol 2 twoByThree))
             , test "Of limits is empty" <|
-                \() -> Expect.equal Array.empty (Matrix.getYs threeByThree 999)
+                \() -> Expect.equal Array.empty (Matrix.getCol 999 threeByThree)
             ]
         , describe "Map function"
             [ test "Double contents" <|

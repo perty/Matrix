@@ -8,4 +8,8 @@ is depending on its neighbours.
 
 Speaking of `neighbours`, that is also a function in this package.
 
+### Version 2.0.0
+
 API design follows the Elm core Array module.
+
+Naming is now rows and columns, as it is more fit to the purpose of the library.

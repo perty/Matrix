@@ -94,7 +94,7 @@ update msg model =
         ClickedCell x y ->
             let
                 currentValue =
-                    Matrix.get model.grid x y |> Maybe.withDefault Empty
+                    Matrix.get x y model.grid |> Maybe.withDefault Empty
 
                 newValue =
                     case currentValue of
@@ -104,7 +104,7 @@ update msg model =
                         Filled ->
                             Empty
             in
-            ( { model | grid = Matrix.set model.grid x y newValue }, Cmd.none )
+            ( { model | grid = Matrix.set  x y newValue model.grid }, Cmd.none )
 
         ClickedNextGeneration ->
             ( { model | grid = nextGeneration model.grid }, Cmd.none )
@@ -121,7 +121,7 @@ update msg model =
 
 setPattern : Matrix Cell -> Matrix Cell
 setPattern grid =
-    List.foldr (\( x, y ) g -> Matrix.set g x y Filled)
+    List.foldr (\( x, y ) g -> Matrix.set  x y Filled g )
         grid
         [ ( 25, 25 ), ( 26, 25 ), ( 27, 25 ), ( 27, 26 ), ( 26, 27 ), ( 30, 25 ), ( 31, 25 ), ( 30, 26 ), ( 32, 26 ), ( 32, 27 ), ( 31, 27 ) ]
 
